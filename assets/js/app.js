@@ -1,6 +1,6 @@
 // @TODO: YOUR CODE HERE!
 
-var svgWidth = 500;
+var svgWidth = 700;
 var svgHeight = 500;
 
 var margin = {
@@ -60,14 +60,27 @@ var circlesGroup = chartGroup.selectAll("circle")
 .attr("cx", d => xLinearScale(d.poverty))
 .attr("cy", d => yLinearScale(d.healthcare))
 .attr("r", "15")
-.attr("fill", "pink")
+.attr("fill", "red")
 .attr("opacity", ".5");
+
+chartGroup.selectAll("null")
+.data(data)
+.enter()
+.append("text")
+.text(function(d) {return d.abbr})
+.attr("x", d => xLinearScale(d.poverty))
+.attr("y", d => yLinearScale(d.healthcare))
+.attr("text-anchor", "middle")
+.attr("font-size", 12)
+.attr("fill", "white");
+
+//Create Tool Tip
 
 var toolTip = d3.tip()
   .attr("class", "tooltip")
   .offset([80, -60])
   .html(function(d) {
-    return (`<br>Health Care %: ${d.healthcare}<br>Poverty %: ${d.poverty}`);
+    return (`${d.state}<br> Poverty: ${d.poverty}`);
   });
 
 //  Create tooltip in the chart
@@ -78,6 +91,21 @@ circlesGroup
       .on("click", function(data) {toolTip.show(data, this);})
       .on("mouseover", function(data) {toolTip.show(data, this);})
       .on("mouseout", function(data, index) {toolTip.hide(data);});
+
+      chartGroup.append("text")
+        .attr("transform", "rotate(-40)")
+        .attr("y", 0 - margin.left + 40)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .attr("class", "axisText")
+        .text("Healthcare %");
+
+      chartGroup.append("text")
+        .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+        .attr("class", "axisText")
+        .text("Poverty");
+    }).catch(function(error) {
+      console.log(error);
 
 
   });
